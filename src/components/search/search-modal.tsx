@@ -114,7 +114,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         <Button
                             onClick={handleSearch}
                             disabled={!query.trim() || isSearching}
-                            className="px-6 py-3 bg-teal-500 hover:bg-teal-600"
+                            className="px-6 py-3 bg-primary hover:bg-primary-hover"
                         >
                             {isSearching ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -136,7 +136,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     ) : isSearching ? (
 
                         <div className="text-center py-12">
-                            <Loader2 className="w-8 h-8 mx-auto mb-4 animate-spin text-teal-500" />
+                            <Loader2 className="w-8 h-8 mx-auto mb-4 animate-spin text-primary" />
                             <p className="text-slate-600">Searching...</p>
                         </div>
                     ) : results.length > 0 ? (
@@ -156,8 +156,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                             onClose();
                                         }}
                                     >
-                                        <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                                            <Icon className="w-5 h-5 text-teal-600" />
+                                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <Icon className="w-5 h-5 text-[primary]" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h3 className="font-medium text-slate-900 truncate">

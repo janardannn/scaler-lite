@@ -29,7 +29,7 @@ export function Navbar({ user }: NavbarProps) {
                 <div className="flex items-center justify-between">
 
                     <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
+                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                             <GraduationCap className="w-5 h-5 text-white" />
                         </div>
                         <span className="font-bold text-slate-900 hidden sm:block">
@@ -45,7 +45,7 @@ export function Navbar({ user }: NavbarProps) {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <button className="flex items-center space-x-2 hover:bg-slate-100 rounded-md p-1 transition-colors">
-                                    <div className="w-8 h-8 bg-teal-100 rounded-md flex items-center justify-center overflow-hidden">
+                                    <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center overflow-hidden">
                                         {user.image ? (
                                             <Image
                                                 src={user.image}
@@ -55,7 +55,7 @@ export function Navbar({ user }: NavbarProps) {
                                                 className="rounded-full"
                                             />
                                         ) : (
-                                            <div className="w-full h-full bg-teal-500 rounded-md flex items-center justify-center">
+                                            <div className="w-full h-full bg-primary rounded-md flex items-center justify-center">
                                                 <span className="text-white font-bold text-sm">
                                                     {getAvatarInitial(user.name, user.username)}
                                                 </span>

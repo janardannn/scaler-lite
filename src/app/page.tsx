@@ -9,6 +9,7 @@ const mockUser = {
   username: "janardan",
   email: "janardan@gmail.com",
   // image: "/avatars/janardan.jpg"
+  type: "instructor", // or "instructor"
 };
 
 const mockMyCourses = [
@@ -16,7 +17,7 @@ const mockMyCourses = [
     id: "1",
     title: "Introduction to Java Programming",
     description: "Learn Java fundamentals and OOP concepts",
-    imageUrl: "/courses/java.jpg",
+    imageUrl: "https://file.labex.io/namespace/df87b950-1f37-4316-bc07-6537a1f2c481/java/lab-your-first-java-lab/assets/java.svg",
     instructor: "Dr. Rajesh Kumar",
     progress: 75,
     totalLectures: 12,
@@ -26,7 +27,7 @@ const mockMyCourses = [
     id: "2",
     title: "Web Development with React",
     description: "Build modern web applications",
-    imageUrl: "/courses/react.jpg",
+    imageUrl: "https://blog.openreplay.com/images/vite-create-react-app/images/hero.png",
     instructor: "Sarah Johnson",
     progress: 40,
     totalLectures: 15,
@@ -36,7 +37,7 @@ const mockMyCourses = [
     id: "3",
     title: "Data Structures & Algorithms",
     description: "Master DSA for interviews",
-    imageUrl: "/courses/dsa.jpg",
+    imageUrl: "https://assets.bytebytego.com/diagrams/0024-10-data-structures-used-in-daily-life.png",
     instructor: "Prof. Amit Singh",
     progress: 20,
     totalLectures: 20,
@@ -49,7 +50,7 @@ const mockTopCourses = [
     id: "4",
     title: "Machine Learning Fundamentals",
     description: "Introduction to ML and AI concepts",
-    imageUrl: "/courses/ml.jpg",
+    imageUrl: "https://prutor.online/wp-content/uploads/2024/08/Machine-Learning.jpg",
     instructor: "Dr. Ananya Patel",
     enrolledCount: 2847
   },
@@ -57,15 +58,15 @@ const mockTopCourses = [
     id: "5",
     title: "Python for Beginners",
     description: "Start your programming journey",
-    imageUrl: "/courses/python.jpg",
+    imageUrl: "https://files.realpython.com/media/Newbie_Watermarked.a9319218252a.jpg",
     instructor: "Mark Thompson",
     enrolledCount: 5234
   },
   {
     id: "6",
-    title: "Digital Marketing Mastery",
-    description: "Complete digital marketing course",
-    imageUrl: "/courses/marketing.jpg",
+    title: "DevOps End-to-End",
+    description: "Complete devops roadmap covered",
+    imageUrl: "https://shalb.com/wp-content/uploads/2019/11/Devops1.jpeg",
     instructor: "Lisa Chen",
     enrolledCount: 1892
   }
@@ -78,14 +79,14 @@ export default function HomePage() {
 
       <main className="pt-28 pb-16 px-4 max-w-7xl mx-auto">
 
-        <Hero userName={getDisplayName(mockUser.name, mockUser.username)} />
+        <Hero user={mockUser} />
 
         <section className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-semibold text-slate-900">
               My Courses
             </h2>
-            <button className="text-teal-600 hover:text-teal-700 font-medium">
+            <button className="text-primary hover:text-primary-hover font-medium">
               View All
             </button>
           </div>
@@ -108,7 +109,7 @@ export default function HomePage() {
             <h2 className="text-2xl font-semibold text-slate-900">
               Top Courses
             </h2>
-            <button className="text-teal-600 hover:text-teal-700 font-medium">
+            <button className="text-primary hover:text-primary-hover font-medium">
               Browse All
             </button>
           </div>

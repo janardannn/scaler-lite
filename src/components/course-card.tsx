@@ -33,18 +33,19 @@ export function CourseCard({
 }: CourseCardProps) {
     return (
         <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden">
-            {/* Course Image */}
+
             <div className="aspect-video relative overflow-hidden">
                 <Image
                     src={imageUrl}
                     alt={title}
                     fill
+                    unoptimized
                     className="object-cover group-hover:scale-105 transition-transform duration-200"
                 />
             </div>
 
             <CardContent className="p-4">
-                <h3 className="font-semibold text-slate-900 mb-2 line-clamp-2 group-hover:text-teal-600 transition-colors">
+                <h3 className="font-semibold text-slate-900 mb-2 line-clamp-2 group-hover:text-[primary] transition-colors">
                     {title}
                 </h3>
 
@@ -66,7 +67,7 @@ export function CourseCard({
                             </span>
                         </div>
                         <Progress value={progress} className="h-2" />
-                        <div className="text-xs text-teal-600 font-medium">
+                        <div className="text-xs text-[primary] font-medium">
                             {progress}% complete
                         </div>
                     </div>
