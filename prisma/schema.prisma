@@ -35,6 +35,7 @@ model User {
   courses     Course[]     @relation("InstructorCourses")
   enrollments Enrollment[]
   progress    Progress[]
+  scores      Score[]
 }
 
 model Course {
@@ -63,6 +64,7 @@ model Lecture {
   questions   Question[]
   progress    Progress[]
   attachments Attachment[]
+  scores      Score[]
 }
 
 model Progress {
@@ -74,6 +76,22 @@ model Progress {
   updatedAt   DateTime @updatedAt
   user        User     @relation(fields: [userId], references: [id])
   lecture     Lecture  @relation(fields: [lectureId], references: [id])
+
+  @@unique([userId, lectureId])
+}
+
+model Score {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  lectureId String   @db.ObjectId
+  score     Int
+  maxScore  Int
+  attempts  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  lecture Lecture @relation(fields: [lectureId], references: [id])
 
   @@unique([userId, lectureId])
 }

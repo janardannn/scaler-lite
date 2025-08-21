@@ -1,103 +1,130 @@
-import Image from "next/image";
+import { Navbar } from "@/components/navbar";
+import { Hero } from "@/components/hero";
+import { CourseCard } from "@/components/course-card";
+import { getDisplayName } from "@/utils/get-display-name";
 
-export default function Home() {
+// mock data
+const mockUser = {
+  name: "Janardan Hazarika",
+  username: "janardan",
+  email: "janardan@gmail.com",
+  // image: "/avatars/janardan.jpg"
+};
+
+const mockMyCourses = [
+  {
+    id: "1",
+    title: "Introduction to Java Programming",
+    description: "Learn Java fundamentals and OOP concepts",
+    imageUrl: "/courses/java.jpg",
+    instructor: "Dr. Rajesh Kumar",
+    progress: 75,
+    totalLectures: 12,
+    completedLectures: 9
+  },
+  {
+    id: "2",
+    title: "Web Development with React",
+    description: "Build modern web applications",
+    imageUrl: "/courses/react.jpg",
+    instructor: "Sarah Johnson",
+    progress: 40,
+    totalLectures: 15,
+    completedLectures: 6
+  },
+  {
+    id: "3",
+    title: "Data Structures & Algorithms",
+    description: "Master DSA for interviews",
+    imageUrl: "/courses/dsa.jpg",
+    instructor: "Prof. Amit Singh",
+    progress: 20,
+    totalLectures: 20,
+    completedLectures: 4
+  }
+];
+
+const mockTopCourses = [
+  {
+    id: "4",
+    title: "Machine Learning Fundamentals",
+    description: "Introduction to ML and AI concepts",
+    imageUrl: "/courses/ml.jpg",
+    instructor: "Dr. Ananya Patel",
+    enrolledCount: 2847
+  },
+  {
+    id: "5",
+    title: "Python for Beginners",
+    description: "Start your programming journey",
+    imageUrl: "/courses/python.jpg",
+    instructor: "Mark Thompson",
+    enrolledCount: 5234
+  },
+  {
+    id: "6",
+    title: "Digital Marketing Mastery",
+    description: "Complete digital marketing course",
+    imageUrl: "/courses/marketing.jpg",
+    instructor: "Lisa Chen",
+    enrolledCount: 1892
+  }
+];
+
+export default function HomePage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-slate-50">
+      <Navbar user={mockUser} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+      <main className="pt-28 pb-16 px-4 max-w-7xl mx-auto">
+
+        <Hero userName={getDisplayName(mockUser.name, mockUser.username)} />
+
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-slate-900">
+              My Courses
+            </h2>
+            <button className="text-teal-600 hover:text-teal-700 font-medium">
+              View All
+            </button>
+          </div>
+
+          <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
+            {mockMyCourses.map((course) => (
+              <div key={course.id} className="flex-none w-80">
+                <CourseCard
+                  {...course}
+                  showProgress={true}
+                  variant="enrolled"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-slate-900">
+              Top Courses
+            </h2>
+            <button className="text-teal-600 hover:text-teal-700 font-medium">
+              Browse All
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {mockTopCourses.map((course) => (
+              <CourseCard
+                key={course.id}
+                {...course}
+                showProgress={false}
+                variant="discovery"
+              />
+            ))}
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
