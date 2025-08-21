@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  INSTRUCTOR
+}
+
+enum LectureType {
+  READING
+  QUIZ
+}
+
+model User {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String?
+  email       String       @unique
+  image       String?
+  role        UserRole     @default(STUDENT)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  courses     Course[]     @relation("InstructorCourses")
+  enrollments Enrollment[]
+  progress    Progress[]
+}
+
+model Course {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  description  String?
+  imageUrl     String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  instructorId String       @db.ObjectId
+  instructor   User         @relation("InstructorCourses", fields: [instructorId], references: [id])
+  lectures     Lecture[]
+  enrollments  Enrollment[]
+}
+
+model Lecture {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  position    Int
+  type        LectureType
+  content     String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  courseId    String       @db.ObjectId
+  course      Course       @relation(fields: [courseId], references: [id])
+  questions   Question[]
+  progress    Progress[]
+  attachments Attachment[]
+}
+
+model Progress {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  isCompleted Boolean  @default(false)
+  userId      String   @db.ObjectId
+  lectureId   String   @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
+  lecture     Lecture  @relation(fields: [lectureId], references: [id])
+
+  @@unique([userId, lectureId])
+}
+
+model Attachment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lectureId String   @db.ObjectId
+  lecture   Lecture  @relation(fields: [lectureId], references: [id])
+}
+
+model Question {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  lectureId String   @db.ObjectId
+  lecture   Lecture  @relation(fields: [lectureId], references: [id])
+  options   Option[]
+}
+
+model Option {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  text       String
+  isCorrect  Boolean  @default(false)
+  questionId String   @db.ObjectId
+  question   Question @relation(fields: [questionId], references: [id])
+}
+
+model Enrollment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  courseId  String   @db.ObjectId
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+}
+
+model OtpToken {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String
+  token   String   @unique
+  expires DateTime
+}
