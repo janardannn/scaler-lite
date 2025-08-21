@@ -1,4 +1,3 @@
-// src/app/instructor/courses/create/page.tsx
 "use client";
 
 import axios from 'axios';
@@ -43,6 +42,7 @@ interface QuizContent {
 export default function CreateCoursePage() {
     const router = useRouter();
     const [formData, setFormData] = useState({ title: "", description: "" });
+    const [bannerImage, setBannerImage] = useState<File | null>(null);
     const [lectures, setLectures] = useState<Lecture[]>([]);
     const [currentLecture, setCurrentLecture] = useState<Partial<Lecture>>({
         title: "",
@@ -64,6 +64,11 @@ export default function CreateCoursePage() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        if (error) setError(null);
+    };
+
+    const handleBannerImageChange = (file: File | null) => {
+        setBannerImage(file);
         if (error) setError(null);
     };
 
@@ -192,8 +197,6 @@ export default function CreateCoursePage() {
         return true;
     };
 
-
-
     const handleSubmit = async () => {
         if (!validateForm()) return;
 
@@ -201,24 +204,35 @@ export default function CreateCoursePage() {
         setError(null);
 
         try {
-            const courseData = {
-                title: formData.title.trim(),
-                description: formData.description.trim(),
-                lectures: lectures,
-            };
+            // Create FormData for file upload if banner image exists
+            let courseData;
 
+            if (bannerImage) {
+                const submitData = new FormData();
+                submitData.append('title', formData.title.trim());
+                submitData.append('description', formData.description.trim());
+                submitData.append('lectures', JSON.stringify(lectures));
+                submitData.append('bannerImage', bannerImage);
+                courseData = submitData;
+            } else {
+                courseData = {
+                    title: formData.title.trim(),
+                    description: formData.description.trim(),
+                    lectures: lectures,
+                };
+            }
 
-            await axios.post("/api/instructor/courses", courseData);
-
+            console.log(courseData);
+            await axios.post("/api/instructor/courses", courseData, {
+                headers: bannerImage ? {} : { 'Content-Type': 'application/json' }
+            });
 
             router.push("/instructor/courses");
 
         } catch (err) {
             let errorMessage = "An unexpected error occurred. Please try again.";
 
-
             if (axios.isAxiosError(err) && err.response) {
-
                 errorMessage = err.response.data.message || "Failed to create the course.";
             } else if (err instanceof Error) {
                 errorMessage = err.message;
@@ -251,6 +265,11 @@ export default function CreateCoursePage() {
             </div>
 
             <main className="max-w-4xl mx-auto px-6 py-8 space-y-8">
+                {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <p className="text-red-600 text-sm">{error}</p>
+                    </div>
+                )}
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center space-x-2">
@@ -259,15 +278,12 @@ export default function CreateCoursePage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                <p className="text-red-600 text-sm">{error}</p>
-                            </div>
-                        )}
                         <CourseDetails
                             title={formData.title}
                             description={formData.description}
+                            bannerImage={bannerImage}
                             onChange={handleInputChange}
+                            onBannerImageChange={handleBannerImageChange}
                             disabled={isSubmitting}
                         />
                     </CardContent>

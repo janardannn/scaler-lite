@@ -58,7 +58,7 @@ export function ReadingLecture({ content, onContentChange, selectedFile, onFileC
                         value={content.content}
                         onChange={(e) => handleContentUpdate(e.target.value)}
                         placeholder="enter lecture content here..."
-                        className="text-sm resize-y min-h-[200px]"
+                        className="text-sm resize-y min-h-[150px]"
                         style={{ resize: 'vertical' }}
                     />
                 ) : content.readingType === 'pdf' ? (
