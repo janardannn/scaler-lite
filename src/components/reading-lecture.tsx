@@ -5,11 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileUploader } from "./file-uploader";
+import { ReadingContent } from "@/types/course-types";
 
-interface ReadingContent {
-    readingType: 'text' | 'link' | 'pdf' | 'video';
-    content: string;
-}
+
 
 interface ReadingLectureProps {
     content: ReadingContent;

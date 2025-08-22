@@ -1,14 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { QuizQuestion } from "@/types/course-types";
 import { Trash2 } from "lucide-react";
 
-interface QuizQuestion {
-    id: string;
-    question: string;
-    options: string[];
-    correctOption: number;
-}
 
 interface QuizQuestionsListProps {
     questions: QuizQuestion[];

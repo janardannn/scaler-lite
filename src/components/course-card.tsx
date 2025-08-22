@@ -1,8 +1,7 @@
 import Image from "next/image";
-import { Star, Users, Clock } from "lucide-react";
+import { Users, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 
 interface CourseCardProps {
     id: string;

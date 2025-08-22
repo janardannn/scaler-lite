@@ -15,29 +15,9 @@ import { ReadingLecture } from "@/components/reading-lecture";
 import { QuizQuestion } from "@/components/quiz-question";
 import { QuizQuestionsList } from "@/components/quiz-questions-list";
 import { LecturesList } from "@/components/lectures-list";
+import { Lecture, QuizQuestion as QuizQuestionType, QuizContent, ReadingContent } from '@/types/course-types';
 
-interface Lecture {
-    id: string;
-    title: string;
-    type: 'reading' | 'quiz';
-    content: ReadingContent | QuizContent;
-}
 
-interface ReadingContent {
-    readingType: 'text' | 'link' | 'pdf' | 'video';
-    content: string;
-}
-
-interface QuizQuestion {
-    id: string;
-    question: string;
-    options: string[];
-    correctOption: number;
-}
-
-interface QuizContent {
-    questions: QuizQuestion[];
-}
 
 export default function CreateCoursePage() {
     const router = useRouter();
@@ -50,7 +30,7 @@ export default function CreateCoursePage() {
         content: { readingType: 'text', content: "" } as ReadingContent
     });
 
-    const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
+    const [quizQuestions, setQuizQuestions] = useState<QuizQuestionType[]>([]);
     const [currentQuizQuestion, setCurrentQuizQuestion] = useState({
         question: "",
         options: ["", "", "", ""],
@@ -120,7 +100,7 @@ export default function CreateCoursePage() {
             return;
         }
 
-        const newQuestion: QuizQuestion = {
+        const newQuestion: QuizQuestionType = {
             id: Date.now().toString(),
             question: currentQuizQuestion.question.trim(),
             options: currentQuizQuestion.options.map(opt => opt.trim()),

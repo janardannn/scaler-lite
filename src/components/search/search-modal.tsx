@@ -143,7 +143,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                         <div className="space-y-2">
                             <p className="text-sm text-slate-500 mb-4">
-                                Found {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
+                                Found {results.length} result{results.length !== 1 ? 's' : ''} for &quot;{query}&quot;
                             </p>
                             {results.map((result) => {
                                 const Icon = result.icon;
@@ -189,7 +189,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                         <div className="text-center py-8 text-slate-500">
                             <Search className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                            <p>No results found for "{query}"</p>
+                            <p>No results found for &quot;{query}&quot;</p>
                             <p className="text-sm mt-1">Try different keywords or check your spelling</p>
                         </div>
                     )}

@@ -1,14 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Lecture, QuizContent, ReadingContent } from "@/types/course-types";
 import { FileText, Link, FileIcon, Video, HelpCircle, Trash2 } from "lucide-react";
 
-interface Lecture {
-    id: string;
-    title: string;
-    type: 'reading' | 'quiz';
-    content: any;
-}
+
 
 interface LecturesListProps {
     lectures: Lecture[];
@@ -39,7 +35,7 @@ export function LecturesList({ lectures, onRemove }: LecturesListProps) {
                         </div>
                         <div className="flex items-center space-x-3">
                             {lecture.type === 'reading' ?
-                                getReadingTypeIcon(lecture.content.readingType) :
+                                getReadingTypeIcon((lecture.content as ReadingContent).readingType) :
                                 <HelpCircle className="w-5 h-5 text-primary" />
                             }
                             <div>
@@ -47,8 +43,8 @@ export function LecturesList({ lectures, onRemove }: LecturesListProps) {
                                 <div className="flex items-center space-x-2 mt-1">
                                     <span className="text-xs bg-slate-200 px-2 py-1 rounded">
                                         {lecture.type === 'reading' ?
-                                            lecture.content.readingType :
-                                            `quiz (${lecture.content.questions?.length || 0} questions)`
+                                            (lecture.content as ReadingContent).readingType :
+                                            `quiz (${(lecture.content as QuizContent).questions?.length || 0} questions)`
                                         }
                                     </span>
                                 </div>

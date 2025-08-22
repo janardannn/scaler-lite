@@ -1,7 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
 import { CourseCard } from "@/components/course-card";
-import { getDisplayName } from "@/utils/get-display-name";
 
 // mock data
 const mockUser = {

@@ -31,7 +31,7 @@ export function CourseDetails({
 
     const handleRemoveBanner = () => {
         onBannerImageChange(null);
-        // Reset the file input
+        // reset the file input
         const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         if (fileInput) {
             fileInput.value = '';

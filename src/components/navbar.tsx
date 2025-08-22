@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { User, Settings, BookOpen, LogOut, GraduationCap } from "lucide-react";
 import {
