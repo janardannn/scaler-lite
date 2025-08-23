@@ -9,13 +9,13 @@ import { useSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
 
 // mock data
-const mockUser = {
-  name: "Janardan Hazarika",
-  username: "janardan",
-  email: "janardan@gmail.com",
-  // image: "/avatars/janardan.jpg"
-  type: "INSTRUCTOR", // or "instructor"
-};
+// const mockUser = {
+//   name: "Janardan Hazarika",
+//   username: "janardan",
+//   email: "janardan@gmail.com",
+//   // image: "/avatars/janardan.jpg"
+//   type: "INSTRUCTOR", // or "instructor"
+// };
 
 const mockMyCourses = [
   {

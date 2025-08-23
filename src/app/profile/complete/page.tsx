@@ -8,8 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { User, Loader2, Camera } from "lucide-react"
-import axios from "axios"
+import { User, Loader2 } from "lucide-react"
+import axios, { AxiosError } from "axios"
+import Image from "next/image"
 
 
 function ImageUploader({
@@ -38,10 +39,12 @@ function ImageUploader({
                 onClick={handleClick}
             >
                 {image ? (
-                    <img
+                    <Image
                         src={image}
-                        alt="Profile preview"
+                        alt="profile"
                         className="w-full h-full object-cover"
+                        unoptimized
+                        priority
                     />
                 ) : (
                     <div className="flex items-center justify-center w-full h-full text-slate-400">
@@ -152,9 +155,9 @@ export default function CompleteProfilePage() {
 
             router.push('/')
 
-        } catch (err: any) {
+        } catch (err: AxiosError | unknown) {
 
-            if (err.response?.data?.message) {
+            if (axios.isAxiosError(err) && err.response?.data?.message) {
                 setError(err.response.data.message)
             } else {
                 setError('Something went wrong')
