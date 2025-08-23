@@ -43,6 +43,8 @@ function ImageUploader({
                         src={image}
                         alt="profile"
                         className="w-full h-full object-cover"
+                        width={40}
+                        height={40}
                         unoptimized
                         priority
                     />
