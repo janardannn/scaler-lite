@@ -111,4 +111,4 @@ The app will be available at [http://localhost:3000](http://localhost:3000)
 
 ## High Level Design
 
-![scaler-lite-HLD](public/scaler-lite-HLD.png)
+![scaler-lite-HLD](public/scaler-lite-HLD.jpg)
