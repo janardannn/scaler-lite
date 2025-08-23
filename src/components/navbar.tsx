@@ -93,7 +93,7 @@ export function Navbar({ user }: NavbarProps) {
                                     onClick={() => signOut({ callbackUrl: '/' })}
                                 >
                                     <LogOut className="mr-2 h-4 w-4" />
-                                    <span>Log Out</span>
+                                    <span>Sign Out</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

@@ -40,6 +40,9 @@ model User {
   // next-auth
   accounts Account[]
   sessions Session[]
+
+  // next-auth failing without this 
+  emailVerified DateTime?
 }
 
 model Course {
