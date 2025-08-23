@@ -48,7 +48,7 @@ export function QuizQuestion({
                 >
                     {options.map((option, index) => (
                         <div key={index} className="flex items-center space-x-3 p-3 border rounded-lg">
-                            <RadioGroupItem value={index.toString()} id={`current-option-${index}`} />
+                            <RadioGroupItem value={index.toString()} id={`current-option-${index}`} className="border border-black/40 bg-slate-200" />
                             <Label htmlFor={`current-option-${index}`} className="text-sm font-medium text-slate-700 min-w-[80px]">
                                 option {String.fromCharCode(65 + index)}
                             </Label>
