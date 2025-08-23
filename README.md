@@ -5,7 +5,8 @@ A full-stack online learning platform built with Next.js. This was an assignment
 ----- 
 ### Deployment
 
-This project is deployed on Vercel. 
+Deployed on Vercel. 
+
 [scaler-lite.vercel.app](https://scaler-lite.vercel.app)
 
 -----
