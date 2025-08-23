@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 import { User, Settings, BookOpen, LogOut, GraduationCap } from "lucide-react";
 import {
     DropdownMenu,
@@ -13,6 +14,7 @@ import {
 import { getDisplayName } from "@/utils/get-display-name";
 import { getAvatarInitial } from "@/utils/get-avatar-initial";
 import { SearchButton } from "@/components/search/search-button";
+import { useEffect } from "react";
 
 interface NavbarProps {
     user: {
@@ -23,14 +25,41 @@ interface NavbarProps {
     };
 }
 
-export function Navbar({ user }: NavbarProps) {
+export function Navbar() {
     // user.image = null; // test avatar fallback 
+
+    const { data: session, status } = useSession()
+    const router = useRouter()
+
+
+    useEffect(() => {
+        if (status === "loading") return // wait for session
+        if (!session) {
+            router.push('/auth/sign-in')
+        }
+    }, [session, status, router])
+
+    const user = session?.user ? {
+        name: session.user.name || "User",
+        username: session.user.email?.split('@')[0] || "",
+        email: session.user.email || "",
+        image: session.user.image || null,
+        type: session.user.role?.toUpperCase() || "STUDENT"
+    } : {
+        name: "User",
+        username: "user",
+        email: "user@example.com",
+        image: null,
+        type: "STUDENT"
+    }
+
     return (
         <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-7xl px-4">
             <div className="bg-white/80 backdrop-blur-md rounded-lg border border-slate-200 shadow-lg px-6 py-3">
                 <div className="flex items-center justify-between">
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 cursor-pointer"
+                        onClick={() => { router.push('/') }}>
                         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                             <GraduationCap className="w-5 h-5 text-white" />
                         </div>
@@ -73,7 +102,8 @@ export function Navbar({ user }: NavbarProps) {
                             </DropdownMenuTrigger>
 
                             <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() => { router.push("/profile/complete") }}>
                                     <User className="mr-2 h-4 w-4" />
                                     <span>My Profile</span>
                                 </DropdownMenuItem>

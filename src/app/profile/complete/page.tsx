@@ -3,14 +3,17 @@
 import { useState, useEffect, useRef } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import axios, { AxiosError } from "axios"
+import Image from "next/image"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { User, Loader2 } from "lucide-react"
-import axios, { AxiosError } from "axios"
-import Image from "next/image"
+
+import { Navbar } from "@/components/navbar"
 
 
 function ImageUploader({
@@ -85,24 +88,28 @@ export default function CompleteProfilePage() {
         if (status === "loading") return
 
         if (!session) {
-            router.push('/auth/signin')
+            router.push('/auth/sign-in')
             return
         }
 
         if (session.user) {
             const generatedUsername = session.user.email?.split('@')[0] || ""
+            const userRole = session.user.role.trim().toUpperCase() || "STUDENT"
             setFormData({
                 name: session.user.name || "",
                 username: generatedUsername,
-                role: "STUDENT"
+                role: userRole as "STUDENT" | "INSTRUCTOR"
             })
 
-            // google sign so may have profile
             if (session.user.image) {
                 setImagePreview(session.user.image)
             }
+
+            console.log('user role from session:', session.user.role)
+            console.log(["STUDENT", "INSTRUCTOR"].includes(session.user.role))
         }
     }, [session, status, router])
+
 
     const handleImageChange = (file: File) => {
         setSelectedFile(file)
@@ -182,6 +189,7 @@ export default function CompleteProfilePage() {
 
     return (
         <div className="min-h-screen bg-primary/30 flex items-center justify-center px-4">
+            <Navbar />
             <Card className="w-full max-w-md bg-white border border-dashed border-slate-500 shadow-lg">
                 <CardHeader className="text-center space-y-4 pt-8">
                     <div>
@@ -246,6 +254,7 @@ export default function CompleteProfilePage() {
                         <div className="space-y-2">
                             <Label htmlFor="role">choose role</Label>
                             <Select
+                                key={`role-${formData.role}`} // for remount
                                 value={formData.role}
                                 onValueChange={(value: "STUDENT" | "INSTRUCTOR") =>
                                     setFormData(prev => ({ ...prev, role: value }))
