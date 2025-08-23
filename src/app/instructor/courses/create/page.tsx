@@ -1,15 +1,17 @@
 "use client";
 
 import axios from 'axios';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from 'next-auth/react';
 import { ArrowLeft, BookOpen, Loader2, Plus } from "lucide-react";
+
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
 import { CourseDetails } from "@/components/course-details";
 import { ReadingLecture } from "@/components/reading-lecture";
 import { QuizQuestion } from "@/components/quiz-question";
@@ -18,18 +20,20 @@ import { LecturesList } from "@/components/lectures-list";
 import { Lecture, QuizQuestion as QuizQuestionType, QuizContent, ReadingContent } from '@/types/course-types';
 
 
-
 export default function CreateCoursePage() {
     const router = useRouter();
+    const { data: session, status } = useSession();
+    const [isLoading, setIsLoading] = useState(true);
+
+
     const [formData, setFormData] = useState({ title: "", description: "" });
-    const [bannerImage, setBannerImage] = useState<File | null>(null);
+    const [bannerImageUrl, setBannerImageUrl] = useState<string>("");
     const [lectures, setLectures] = useState<Lecture[]>([]);
     const [currentLecture, setCurrentLecture] = useState<Partial<Lecture>>({
         title: "",
         type: 'reading',
-        content: { readingType: 'text', content: "" } as ReadingContent
+        content: { readingType: 'text', content: "", contentUrl: "" } as ReadingContent
     });
-
     const [quizQuestions, setQuizQuestions] = useState<QuizQuestionType[]>([]);
     const [currentQuizQuestion, setCurrentQuizQuestion] = useState({
         question: "",
@@ -37,9 +41,32 @@ export default function CreateCoursePage() {
         correctOption: 0
     });
 
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+
+    useEffect(() => {
+        if (status === 'loading') return;
+
+        if (!session) {
+            router.push('/auth/sign-in');
+            return;
+        }
+
+        if (session.user.role !== 'INSTRUCTOR') {
+            router.push('/');
+        }
+
+        setIsLoading(false);
+    }, [session, status, router]);
+
+    if (status === 'loading' || isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+        );
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -47,9 +74,15 @@ export default function CreateCoursePage() {
         if (error) setError(null);
     };
 
-    const handleBannerImageChange = (file: File | null) => {
-        setBannerImage(file);
-        if (error) setError(null);
+
+    const handleBannerUploadComplete = (fileUrl: string) => {
+        if (fileUrl) {
+            setBannerImageUrl(fileUrl);
+        }
+    };
+
+    const handleBannerUploadError = (error: Error) => {
+        setError(`Banner upload failed: ${error.message}`);
     };
 
     const handleLectureTypeChange = (type: 'reading' | 'quiz') => {
@@ -57,10 +90,10 @@ export default function CreateCoursePage() {
             ...prev,
             type,
             content: type === 'reading'
-                ? { readingType: 'text', content: "" } as ReadingContent
+                ? { readingType: 'text', content: "", contentUrl: "" } as ReadingContent
                 : { questions: [] } as QuizContent
         }));
-        setSelectedFile(null);
+
         if (type === 'quiz') {
             setQuizQuestions([]);
             setCurrentQuizQuestion({ question: "", options: ["", "", "", ""], correctOption: 0 });
@@ -69,24 +102,6 @@ export default function CreateCoursePage() {
 
     const handleReadingContentChange = (content: ReadingContent) => {
         setCurrentLecture(prev => ({ ...prev, content }));
-    };
-
-    const handleFileChange = (file: File | null) => {
-        setSelectedFile(file);
-        if (file) {
-            setCurrentLecture(prev => ({
-                ...prev,
-                content: { ...(prev.content as ReadingContent), content: file.name }
-            }));
-        }
-    };
-
-    const handleFileRemove = () => {
-        setSelectedFile(null);
-        setCurrentLecture(prev => ({
-            ...prev,
-            content: { ...(prev.content as ReadingContent), content: "" }
-        }));
     };
 
     const addQuizQuestion = () => {
@@ -124,7 +139,7 @@ export default function CreateCoursePage() {
 
         if (currentLecture.type === 'reading') {
             const content = currentLecture.content as ReadingContent;
-            if (!content.content?.trim()) {
+            if (!content.content?.trim() && content.readingType !== 'text') {
                 setError("lecture content is required");
                 return;
             }
@@ -148,12 +163,11 @@ export default function CreateCoursePage() {
         setCurrentLecture({
             title: "",
             type: 'reading',
-            content: { readingType: 'text', content: "" } as ReadingContent
+            content: { readingType: 'text', content: "", contentUrl: "" } as ReadingContent
         });
 
         setQuizQuestions([]);
         setCurrentQuizQuestion({ question: "", options: ["", "", "", ""], correctOption: 0 });
-        setSelectedFile(null);
         setError(null);
     };
 
@@ -177,6 +191,7 @@ export default function CreateCoursePage() {
         return true;
     };
 
+
     const handleSubmit = async () => {
         if (!validateForm()) return;
 
@@ -184,30 +199,18 @@ export default function CreateCoursePage() {
         setError(null);
 
         try {
-            // Create FormData for file upload if banner image exists
-            let courseData;
-
-            if (bannerImage) {
-                const submitData = new FormData();
-                submitData.append('title', formData.title.trim());
-                submitData.append('description', formData.description.trim());
-                submitData.append('lectures', JSON.stringify(lectures));
-                submitData.append('bannerImage', bannerImage);
-                courseData = submitData;
-            } else {
-                courseData = {
-                    title: formData.title.trim(),
-                    description: formData.description.trim(),
-                    lectures: lectures,
-                };
-            }
-
-            console.log(courseData);
-            await axios.post("/api/instructor/courses", courseData, {
-                headers: bannerImage ? {} : { 'Content-Type': 'application/json' }
+            const courseData = {
+                title: formData.title.trim(),
+                description: formData.description.trim(),
+                bannerImageUrl,
+                lectures: lectures,
+            };
+            console.log(courseData)
+            await axios.post("/api/courses", courseData, {
+                headers: { 'Content-Type': 'application/json' }
             });
 
-            router.push("/instructor/courses");
+            router.push("/courses/my-courses");
 
         } catch (err) {
             let errorMessage = "An unexpected error occurred. Please try again.";
@@ -224,6 +227,7 @@ export default function CreateCoursePage() {
         }
     };
 
+
     return (
         <div className="min-h-screen bg-slate-50">
             <div className="bg-white border-b">
@@ -234,6 +238,7 @@ export default function CreateCoursePage() {
                             size="sm"
                             onClick={() => router.back()}
                             className="text-slate-600 hover:text-slate-900"
+                            disabled={isSubmitting}
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             back
@@ -250,6 +255,7 @@ export default function CreateCoursePage() {
                         <p className="text-red-600 text-sm">{error}</p>
                     </div>
                 )}
+
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center space-x-2">
@@ -261,9 +267,11 @@ export default function CreateCoursePage() {
                         <CourseDetails
                             title={formData.title}
                             description={formData.description}
-                            bannerImage={bannerImage}
+                            bannerImageUrl={bannerImageUrl}
                             onChange={handleInputChange}
-                            onBannerImageChange={handleBannerImageChange}
+                            onBannerUploadComplete={handleBannerUploadComplete}
+                            onBannerUploadError={handleBannerUploadError}
+                            onBannerRemove={() => setBannerImageUrl("")}
                             disabled={isSubmitting}
                         />
                     </CardContent>
@@ -284,11 +292,16 @@ export default function CreateCoursePage() {
                                     value={currentLecture.title || ""}
                                     onChange={(e) => setCurrentLecture(prev => ({ ...prev, title: e.target.value }))}
                                     placeholder="enter lecture title"
+                                    disabled={isSubmitting}
                                 />
                             </div>
                             <div className="space-y-2">
                                 <Label>lecture type</Label>
-                                <Select value={currentLecture.type} onValueChange={handleLectureTypeChange}>
+                                <Select
+                                    value={currentLecture.type}
+                                    onValueChange={handleLectureTypeChange}
+                                    disabled={isSubmitting}
+                                >
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
@@ -304,9 +317,7 @@ export default function CreateCoursePage() {
                             <ReadingLecture
                                 content={currentLecture.content as ReadingContent}
                                 onContentChange={handleReadingContentChange}
-                                selectedFile={selectedFile}
-                                onFileChange={handleFileChange}
-                                onFileRemove={handleFileRemove}
+                                disabled={isSubmitting}
                             />
                         )}
 
@@ -346,7 +357,11 @@ export default function CreateCoursePage() {
                             </>
                         )}
 
-                        <Button onClick={addLecture} className="w-full bg-primary hover:bg-primary-hover">
+                        <Button
+                            onClick={addLecture}
+                            className="w-full bg-primary hover:bg-primary-hover"
+                            disabled={isSubmitting}
+                        >
                             <Plus className="w-4 h-4 mr-2" />
                             add lecture
                         </Button>

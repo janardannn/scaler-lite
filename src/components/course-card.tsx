@@ -28,7 +28,6 @@ export function CourseCard({
     progress = 0,
     totalLectures = 0,
     completedLectures = 0,
-    enrolledCount = 0,
 }: CourseCardProps) {
     return (
         <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden">
@@ -68,20 +67,6 @@ export function CourseCard({
                         <Progress value={progress} className="h-2" />
                         <div className="text-xs text-[primary] font-medium">
                             {progress}% complete
-                        </div>
-                    </div>
-                )}
-
-
-                {variant === "discovery" && (
-                    <div className="flex items-center justify-between text-sm text-slate-500">
-                        <div className="flex items-center">
-                            <Users className="w-4 h-4 mr-1" />
-                            <span>{enrolledCount.toLocaleString()} students</span>
-                        </div>
-                        <div className="flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
-                            <span>Self-paced</span>
                         </div>
                     </div>
                 )}

@@ -35,3 +35,15 @@ export interface Lecture {
     type: 'reading' | 'quiz';
     content: QuizContent | ReadingContent;
 }
+
+export interface Course {
+    id: string;
+    title: string;
+    description: string | null;
+    imageUrl: string | null;
+    instructor: { name: string | null };
+    _count: {
+        lectures: number;
+    };
+    progress?: number;
+}

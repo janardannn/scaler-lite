@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLastLecture } from "@/hooks/use-last-lecture";
 import { getDisplayName } from "@/utils/get-display-name";
+import { useRouter } from "next/navigation";
 
 interface HeroProps {
     user: {
@@ -16,6 +17,7 @@ interface HeroProps {
 }
 
 export function Hero({ user }: HeroProps) {
+    const router = useRouter();
     const { lastLecture } = useLastLecture();
 
     return (
@@ -55,7 +57,7 @@ export function Hero({ user }: HeroProps) {
                             </div>
                             <Button
                                 className="bg-primary hover:bg-primary-hover text-white"
-                                onClick={() => window.location.href = '/instructor/courses/create'}
+                                onClick={() => router.push('/instructor/courses/create')}
                             >
                                 Get Started
                                 <ArrowRight className="ml-2 w-4 h-4" />
@@ -117,7 +119,7 @@ export function Hero({ user }: HeroProps) {
                             </div>
                             <Button
                                 className="bg-blue-500 hover:bg-blue-600 text-white"
-                                onClick={() => window.location.href = '/courses'}
+                                onClick={() => router.push('/courses')}
                             >
                                 Browse Courses
                                 <ArrowRight className="ml-2 w-4 h-4" />

@@ -4,43 +4,60 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Image, X } from "lucide-react";
+import { Upload, X, Image } from "lucide-react";
+import { useState } from "react";
+
+// ✅ Import UploadThing
+import { UploadButton } from "@/utils/uploadthing";
+import { UploadedFileData, UploadFileResult } from "uploadthing/types";
 
 interface CourseDetailsProps {
     title: string;
     description: string;
-    bannerImage?: File | null;
+    bannerImageUrl?: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-    onBannerImageChange: (file: File | null) => void;
+    onBannerUploadComplete: (res: any) => void;
+    onBannerUploadError: (error: Error) => void;
+    onBannerRemove: () => void;
     disabled: boolean;
 }
 
 export function CourseDetails({
     title,
     description,
-    bannerImage,
+    bannerImageUrl,
     onChange,
-    onBannerImageChange,
+    onBannerUploadComplete,
+    onBannerUploadError,
+    onBannerRemove,
     disabled
 }: CourseDetailsProps) {
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        onBannerImageChange(file);
+    const [bannerFileName, setBannerFileName] = useState<string>("");
+    const [isUploading, setIsUploading] = useState(false);
+
+
+    const handleBannerUploadComplete = (file: UploadedFileData[]) => {
+        if (file[0]) {
+            console.log(file);
+            setBannerFileName(file[0].name);
+            onBannerUploadComplete(file[0].ufsUrl);
+        }
+        setIsUploading(false);
     };
 
-    const handleRemoveBanner = () => {
-        onBannerImageChange(null);
-        // reset the file input
-        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-        if (fileInput) {
-            fileInput.value = '';
-        }
+    const handleBannerUploadError = (error: Error) => {
+        onBannerUploadError(error);
+        setIsUploading(false);
+    };
+
+    const handleBannerRemove = () => {
+        setBannerFileName(""); // Clear filename
+        onBannerRemove(); // Call parent handler
     };
 
     return (
         <div className="grid grid-cols-1 gap-6">
-
             <div className="space-y-2">
                 <Label htmlFor="title">course title</Label>
                 <Input
@@ -68,43 +85,79 @@ export function CourseDetails({
             </div>
 
             <div className="space-y-3">
-                <Label htmlFor="banner">course banner image (optional)</Label>
-                <div className="space-y-3">
-                    <input
-                        id="banner"
-                        type="file"
-                        accept="image/*"
-                        disabled={disabled}
-                        onChange={handleFileChange}
-                        className="w-full rounded-md border border-slate-300 p-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-                    />
+                <Label>course banner image (optional)</Label>
 
-                    {bannerImage && (
+                {bannerImageUrl || bannerFileName ? (
+                    <div className="space-y-3">
+                        {/* ✅ Show preview if URL exists */}
+                        {bannerImageUrl && (
+                            <div className="relative w-full h-48 rounded-lg overflow-hidden bg-slate-100">
+                                <img
+                                    src={bannerImageUrl}
+                                    alt="Course banner"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        )}
+
+                        {/* ✅ Show filename (not URL) */}
                         <div className="flex items-center justify-between p-3 bg-slate-50 rounded-md border">
                             <div className="flex items-center space-x-3">
                                 <div className="w-12 h-12 bg-slate-200 rounded-md flex items-center justify-center">
                                     <Image className="w-5 h-5 text-slate-500" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-medium text-slate-900">{bannerImage.name}</p>
+                                    <p className="text-sm font-medium text-slate-900">
+                                        {bannerFileName || "Banner image"}
+                                    </p>
                                     <p className="text-xs text-slate-500">
-                                        {(bannerImage.size / 1024 / 1024).toFixed(2)} MB
+                                        {isUploading ? 'Uploading...' : 'Image selected'}
                                     </p>
                                 </div>
                             </div>
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={handleRemoveBanner}
-                                disabled={disabled}
+                                onClick={handleBannerRemove}
+                                disabled={disabled || isUploading}
                                 className="text-red-600 hover:text-red-700 hover:bg-red-50"
                             >
                                 <X className="w-4 h-4" />
                             </Button>
                         </div>
-                    )}
+                    </div>
+                ) : (
 
-                </div>
+                    <UploadButton
+                        endpoint="courseBanner"
+                        onClientUploadComplete={handleBannerUploadComplete}
+                        onUploadError={handleBannerUploadError}
+                        onUploadBegin={() => setIsUploading(true)}
+                        appearance={{
+                            button: "w-full py-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors",
+                            container: "w-full",
+                            allowedContent: "text-xs text-slate-500 mt-2"
+                        }}
+                        content={{
+                            button: (
+                                <div className="flex items-center justify-center space-x-2">
+                                    {isUploading ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                            <span>uploading...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Upload className="w-5 h-5" />
+                                            <span>upload banner image</span>
+                                        </>
+                                    )}
+                                </div>
+                            ),
+                            allowedContent: "Images (PNG, JPG, WEBP) up to 4MB"
+                        }}
+                    />
+                )}
             </div>
         </div>
     );

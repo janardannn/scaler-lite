@@ -107,11 +107,13 @@ export function Navbar() {
                                     <User className="mr-2 h-4 w-4" />
                                     <span>My Profile</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() => { router.push("/courses/my-courses") }}>
                                     <BookOpen className="mr-2 h-4 w-4" />
                                     <span>My Courses</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() => { router.push("/courses") }}>
                                     <GraduationCap className="mr-2 h-4 w-4" />
                                     <span>All Courses</span>
                                 </DropdownMenuItem>

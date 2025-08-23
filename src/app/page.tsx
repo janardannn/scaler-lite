@@ -1,13 +1,152 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import axios from 'axios';
+import { Loader2, AlertTriangle } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
 import { CourseCard } from "@/components/course-card";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Course } from "@/types/course-types";
 
+
+export default function HomePage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const [myCourses, setMyCourses] = useState<Course[]>([]);
+  const [topCourses, setTopCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session) {
+      router.push('/auth/sign-in');
+      return;
+    }
+
+    const fetchCourses = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const [myCoursesRes, topCoursesRes] = await Promise.all([
+          axios.get('/api/courses/my-courses'),
+          axios.get('/api/courses')
+        ]);
+        setMyCourses(myCoursesRes.data);
+        setTopCourses(topCoursesRes.data);
+      } catch (err) {
+        console.error("Failed to fetch courses:", err);
+        setError("Sorry, we couldn't load the courses. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, [session, status, router]);
+
+  const user = session?.user ? {
+    name: session.user.name || "User",
+    username: session.user.email?.split('@')[0] || "",
+    email: session.user.email || "",
+    image: session.user.image || null,
+    type: session.user.role?.toUpperCase() || "STUDENT"
+  } : null;
+
+  if (status === "loading" || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <Navbar />
+
+      <main className="pt-28 pb-16 px-4 max-w-7xl mx-auto">
+        <Hero user={user} />
+
+        {error && (
+          <div className="mb-8 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg relative flex items-center">
+            <AlertTriangle className="w-5 h-5 mr-2" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-slate-900">
+              My Courses
+            </h2>
+            <Button variant="link" onClick={() => router.push('/courses/my-courses')} className="text-primary hover:text-primary-hover font-medium">
+              View All
+            </Button>
+          </div>
+          {isLoading ? (
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          ) : (
+            <div className="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4">
+              {myCourses.length > 0 ? myCourses.map((course) => (
+                <div key={course.id} className="flex-none w-80">
+                  <CourseCard
+                    id={course.id}
+                    title={course.title}
+                    description={course.description || ""}
+                    imageUrl={course.imageUrl || "/placeholder.jpg"}
+                    instructor={course.instructor?.name || "Instructor"}
+                    variant={user.type === 'STUDENT' ? 'enrolled' : 'discovery'}
+                    showProgress={user.type === 'STUDENT'}
+                    totalLectures={course._count.lectures}
+                    progress={course.progress}
+                  />
+                </div>
+              )) : <p className="text-slate-500">You haven't created or enrolled in any courses yet.</p>}
+            </div>
+          )}
+        </section>
+
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-slate-900">
+              Top Courses
+            </h2>
+            <Button variant="link" onClick={() => router.push('/courses')} className="text-primary hover:text-primary-hover font-medium">
+              Browse All
+            </Button>
+          </div>
+          {isLoading ? (
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {topCourses.map((course) => (
+                <CourseCard
+                  key={course.id}
+                  id={course.id}
+                  title={course.title}
+                  description={course.description || ""}
+                  imageUrl={course.imageUrl || "/placeholder.jpg"}
+                  instructor={course.instructor?.name || "Instructor"}
+                  variant="discovery"
+                  showProgress={false}
+                  totalLectures={course._count.lectures}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
+
+
+// mocks
 // mock data
 // const mockUser = {
 //   name: "Janardan Hazarika",
@@ -17,157 +156,62 @@ import { Loader2 } from "lucide-react";
 //   type: "INSTRUCTOR", // or "instructor"
 // };
 
-const mockMyCourses = [
-  {
-    id: "1",
-    title: "Introduction to Java Programming",
-    description: "Learn Java fundamentals and OOP concepts",
-    imageUrl: "https://file.labex.io/namespace/df87b950-1f37-4316-bc07-6537a1f2c481/java/lab-your-first-java-lab/assets/java.svg",
-    instructor: "Dr. Rajesh Kumar",
-    progress: 75,
-    totalLectures: 12,
-    completedLectures: 9
-  },
-  {
-    id: "2",
-    title: "Web Development with React",
-    description: "Build modern web applications",
-    imageUrl: "https://blog.openreplay.com/images/vite-create-react-app/images/hero.png",
-    instructor: "Sarah Johnson",
-    progress: 40,
-    totalLectures: 15,
-    completedLectures: 6
-  },
-  {
-    id: "3",
-    title: "Data Structures & Algorithms",
-    description: "Master DSA for interviews",
-    imageUrl: "https://assets.bytebytego.com/diagrams/0024-10-data-structures-used-in-daily-life.png",
-    instructor: "Prof. Amit Singh",
-    progress: 20,
-    totalLectures: 20,
-    completedLectures: 4
-  }
-];
+// const mockMyCourses = [
+//   {
+//     id: "1",
+//     title: "Introduction to Java Programming",
+//     description: "Learn Java fundamentals and OOP concepts",
+//     imageUrl: "https://file.labex.io/namespace/df87b950-1f37-4316-bc07-6537a1f2c481/java/lab-your-first-java-lab/assets/java.svg",
+//     instructor: "Dr. Rajesh Kumar",
+//     progress: 75,
+//     totalLectures: 12,
+//     completedLectures: 9
+//   },
+//   {
+//     id: "2",
+//     title: "Web Development with React",
+//     description: "Build modern web applications",
+//     imageUrl: "https://blog.openreplay.com/images/vite-create-react-app/images/hero.png",
+//     instructor: "Sarah Johnson",
+//     progress: 40,
+//     totalLectures: 15,
+//     completedLectures: 6
+//   },
+//   {
+//     id: "3",
+//     title: "Data Structures & Algorithms",
+//     description: "Master DSA for interviews",
+//     imageUrl: "https://assets.bytebytego.com/diagrams/0024-10-data-structures-used-in-daily-life.png",
+//     instructor: "Prof. Amit Singh",
+//     progress: 20,
+//     totalLectures: 20,
+//     completedLectures: 4
+//   }
+// ];
 
-const mockTopCourses = [
-  {
-    id: "4",
-    title: "Machine Learning Fundamentals",
-    description: "Introduction to ML and AI concepts",
-    imageUrl: "https://prutor.online/wp-content/uploads/2024/08/Machine-Learning.jpg",
-    instructor: "Dr. Ananya Patel",
-    enrolledCount: 2847
-  },
-  {
-    id: "5",
-    title: "Python for Beginners",
-    description: "Start your programming journey",
-    imageUrl: "https://files.realpython.com/media/Newbie_Watermarked.a9319218252a.jpg",
-    instructor: "Mark Thompson",
-    enrolledCount: 5234
-  },
-  {
-    id: "6",
-    title: "DevOps End-to-End",
-    description: "Complete devops roadmap covered",
-    imageUrl: "https://shalb.com/wp-content/uploads/2019/11/Devops1.jpeg",
-    instructor: "Lisa Chen",
-    enrolledCount: 1892
-  }
-];
-
-export default function HomePage() {
-
-  const { data: session, status } = useSession()
-  const router = useRouter()
-
-
-  useEffect(() => {
-    if (status === "loading") return // wait for session
-    if (!session) {
-      router.push('/auth/sign-in')
-    }
-  }, [session, status, router])
-
-  const user = session?.user ? {
-    name: session.user.name || "User",
-    username: session.user.email?.split('@')[0] || "",
-    email: session.user.email || "",
-    image: session.user.image || null,
-    type: session.user.role?.toUpperCase() || "STUDENT"
-  } : {
-    name: "User",
-    username: "user",
-    email: "user@example.com",
-    image: null,
-    type: "STUDENT"
-  }
-
-  console.log(user);
-
-  if (status === "loading" || !session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    )
-  }
-
-
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <Navbar />
-
-      <main className="pt-28 pb-16 px-4 max-w-7xl mx-auto">
-
-        <Hero user={user} />
-
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold text-slate-900">
-              My Courses
-            </h2>
-            <button className="text-primary hover:text-primary-hover font-medium">
-              View All
-            </button>
-          </div>
-
-          <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
-            {mockMyCourses.map((course) => (
-              <div key={course.id} className="flex-none w-80">
-                <CourseCard
-                  {...course}
-                  showProgress={true}
-                  variant="enrolled"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold text-slate-900">
-              Top Courses
-            </h2>
-            <button className="text-primary hover:text-primary-hover font-medium">
-              Browse All
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockTopCourses.map((course) => (
-              <CourseCard
-                key={course.id}
-                {...course}
-                showProgress={false}
-                variant="discovery"
-              />
-            ))}
-          </div>
-        </section>
-      </main>
-    </div>
-  );
-}
+// const mockTopCourses = [
+//   {
+//     id: "4",
+//     title: "Machine Learning Fundamentals",
+//     description: "Introduction to ML and AI concepts",
+//     imageUrl: "https://prutor.online/wp-content/uploads/2024/08/Machine-Learning.jpg",
+//     instructor: "Dr. Ananya Patel",
+//     enrolledCount: 2847
+//   },
+//   {
+//     id: "5",
+//     title: "Python for Beginners",
+//     description: "Start your programming journey",
+//     imageUrl: "https://files.realpython.com/media/Newbie_Watermarked.a9319218252a.jpg",
+//     instructor: "Mark Thompson",
+//     enrolledCount: 5234
+//   },
+//   {
+//     id: "6",
+//     title: "DevOps End-to-End",
+//     description: "Complete devops roadmap covered",
+//     imageUrl: "https://shalb.com/wp-content/uploads/2019/11/Devops1.jpeg",
+//     instructor: "Lisa Chen",
+//     enrolledCount: 1892
+//   }
+// ];
