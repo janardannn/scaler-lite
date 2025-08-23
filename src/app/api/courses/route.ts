@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { HttpStatus } from "@/utils/http-status";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { Lecture, LectureData, QuizContent, QuizQuestion } from "@/types/course-types"
 
 export async function GET(request: NextRequest) {
     try {
@@ -58,11 +59,11 @@ export async function POST(request: NextRequest) {
                 imageUrl: bannerImageUrl,
                 instructorId: session.user.id,
                 lectures: {
-                    create: lectures.map((lecture: any, index: number) => {
-                        const lectureData: any = {
+                    create: lectures.map((lecture: Lecture, index: number) => {
+                        const lectureData: LectureData = {
                             title: lecture.title,
                             position: index + 1,
-                            type: lecture.type.toUpperCase(),
+                            type: lecture.type.toUpperCase() as 'READING' | 'QUIZ',
                         };
 
                         if (lecture.type === 'reading') {
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
                             }
                         } else if (lecture.type === 'quiz') {
                             lectureData.questions = {
-                                create: lecture.content.questions.map((q: any) => ({
+                                create: (lecture.content as QuizContent).questions.map((q: QuizQuestion) => ({
                                     text: q.question,
                                     options: {
                                         create: q.options.map((opt: string, optIndex: number) => ({

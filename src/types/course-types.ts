@@ -47,3 +47,27 @@ export interface Course {
     };
     progress?: number;
 }
+
+export interface LectureData {
+    title: string;
+    position: number;
+    type: 'READING' | 'QUIZ';
+    content?: string;
+    attachments?: {
+        create: {
+            name: string;
+            url: string;
+        }[];
+    };
+    questions?: {
+        create: {
+            text: string;
+            options: {
+                create: {
+                    text: string;
+                    isCorrect: boolean;
+                }[];
+            };
+        }[];
+    };
+}

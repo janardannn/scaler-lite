@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Upload, X, Image } from "lucide-react";
 import { useState } from "react";
 
-// ✅ Import UploadThing
 import { UploadButton } from "@/utils/uploadthing";
 import { UploadedFileData, UploadFileResult } from "uploadthing/types";
 
@@ -16,7 +15,7 @@ interface CourseDetailsProps {
     description: string;
     bannerImageUrl?: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-    onBannerUploadComplete: (res: any) => void;
+    onBannerUploadComplete: (res: string) => void;
     onBannerUploadError: (error: Error) => void;
     onBannerRemove: () => void;
     disabled: boolean;

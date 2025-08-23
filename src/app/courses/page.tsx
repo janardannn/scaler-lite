@@ -105,13 +105,13 @@ export default function AllCoursesPage() {
                 {!isLoading && !error && courses.length === 0 && (
                     <div className="text-center py-12 border-2 border-dashed rounded-lg">
                         <h3 className="text-xl font-medium text-slate-700">No courses yet</h3>
-                        <p className="text-slate-500 mt-2 mb-4">Click "Create New Course" to get started.</p>
+                        <p className="text-slate-500 mt-2 mb-4">Click &quot;Create New Course&quot; to get started.</p>
                         <BookOpen className="w-12 h-12 text-slate-300 mx-auto" />
                     </div>
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {courses.map((course: any) => (
+                    {courses.map((course: Course) => (
                         <CourseCard
                             key={course.id}
                             id={course.id}

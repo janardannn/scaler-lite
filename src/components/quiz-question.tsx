@@ -61,7 +61,7 @@ export function QuizQuestion({
                         </div>
                     ))}
                 </RadioGroup>
-                <p className="text-xs text-slate-500">select the radio button next to the correct answer</p>
+
             </div>
 
             <Button

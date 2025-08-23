@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Users, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -11,7 +14,6 @@ interface CourseCardProps {
     instructor: string;
     showProgress: boolean;
     variant: "enrolled" | "discovery";
-
     progress?: number;
     totalLectures?: number;
     completedLectures?: number;
@@ -19,6 +21,7 @@ interface CourseCardProps {
 }
 
 export function CourseCard({
+    id,
     title,
     description,
     imageUrl,
@@ -29,9 +32,17 @@ export function CourseCard({
     totalLectures = 0,
     completedLectures = 0,
 }: CourseCardProps) {
-    return (
-        <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden">
+    const router = useRouter();
 
+    const handleCardClick = () => {
+        router.push(`/courses/${id}`);
+    };
+
+    return (
+        <Card
+            className="group hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden"
+            onClick={handleCardClick}
+        >
             <div className="aspect-video relative overflow-hidden">
                 <Image
                     src={imageUrl}
@@ -54,7 +65,6 @@ export function CourseCard({
                 <div className="flex items-center text-sm text-slate-500 mb-3">
                     <span>by {instructor}</span>
                 </div>
-
 
                 {showProgress && variant === "enrolled" && (
                     <div className="space-y-2">

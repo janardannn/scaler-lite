@@ -106,7 +106,7 @@ export default function HomePage() {
                     progress={course.progress}
                   />
                 </div>
-              )) : <p className="text-slate-500">You haven't created or enrolled in any courses yet.</p>}
+              )) : <p className="text-slate-500">You haven&apos;t created or enrolled in any courses yet.</p>}
             </div>
           )}
         </section>
