@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Scaler Lite
 
-## Getting Started
+A full-stack online learning platform built with Next.js. This was an assignment speedrun, built in around 50 hours.
 
-First, run the development server:
+----- 
+### Deployment
+
+This project is deployed on Vercel. 
+[scaler-lite.vercel.app](https://scaler-lite.vercel.app)
+
+-----
+
+## Stack
+
+  - **Framework**: Next.js (App Router)
+  - **Language**: TypeScript
+  - **Database**: MongoDB
+  - **ORM**: Prisma
+  - **Auth**: NextAuth.js
+  - **UI**: Tailwind CSS, shadcn/ui
+  - **File Uploads**: UploadThing
+
+-----
+
+
+## Project Structure
+
+### DB Schema (`schema.prisma`)
+
+  * `User` - User information (Student or Instructor).
+  * `Course` - course created by an instructor
+  * `Lecture` lecture within a course (reading or quiz). Reading addtionally has 4 types - text, pdf, video (yt link), link
+  * `Progress` - student's completion of lectures
+  * `Score` - student's quiz scores
+  * `Enrollment` - relationship - student's enrollment in a course
+  
+  
+
+### API Routes (`/src/app/api`)
+
+  * `/auth/...` - NextAuth.js routes for authentication.
+  * `/courses` - GET all courses, POST new course.
+  * `/courses/my-courses` - GET courses for the current user.
+  * `/courses/[courseId]` - GET course details.
+  * `/courses/[courseId]/enroll` - POST to enroll in a course.
+  * `/courses/[courseId]/lectures/[lectureId]` - GET lecture details.
+  * `/courses/[courseId]/lectures/[lectureId]/complete` - POST to mark a lecture as complete.
+  * `/courses/[courseId]/lectures/[lectureId]/submit` - POST quiz submission.
+  * `/profile` - POST to update user profile.
+  * `/uploadthing` - Handles file uploads.
+
+### Frontend Routes (`/src/app`)
+
+  * `/` - Home page
+  * `/auth/sign-in` - Sign-in page
+  * `/courses` - All courses page
+  * `/courses/[courseId]` - Course detail page
+  * `/courses/[courseId]/lectures/[lectureId]` - Lecture view page
+  * `/instructor/courses/create` - Course creation form
+  * `/profile/complete` - User profile completion page
+
+-----
+
+## Local Development
+
+#### 1\. Clone & Install
+
+```bash
+git clone https://github.com/janardannn/scaler-lite.git
+cd scaler-lite
+npm install
+```
+
+#### 2\. Environment Variables
+
+Create a `.env` file in the root directory and add the following:
+
+```env
+# Prisma
+DATABASE_URL="your_mongodb_connection_string"
+
+# NextAuth.js
+NEXTAUTH_SECRET="a_random_secret_string"
+GOOGLE_CLIENT_ID="your_google_client_id"
+GOOGLE_CLIENT_SECRET="your_google_client_secret"
+
+# UploadThing
+UPLOADTHING_SECRET="your_uploadthing_secret"
+UPLOADTHING_APP_ID="your_uploadthing_app_id"
+```
+
+#### 3\. Database Setup
+
+Push the schema and seed the database.
+
+```bash
+npx prisma generate
+npx prisma db push
+npx prisma db seed (optional, may require setup)
+```
+
+#### 4\. Run Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app will be available at [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+-----
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## High Level Design
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+![scaler-lite-HLD](public/scaler-lite-HLD.png)
