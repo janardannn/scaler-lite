@@ -25,14 +25,14 @@ export function Hero({ user }: HeroProps) {
                     Welcome back, {getDisplayName(user.name, user.username)}! 👋
                 </h1>
                 <p className="text-lg text-slate-600">
-                    {user.type === 'instructor'
+                    {user.type === 'INSTRUCTOR'
                         ? "Ready to inspire and educate?"
                         : "Ready to continue your learning journey?"
                     }
                 </p>
             </div>
 
-            {user.type === 'instructor' ? (
+            {user.type === 'INSTRUCTOR' ? (
                 // INSTRUCTOR : create new course card
                 <Card className="bg-gradient-to-r from-primary-light to-blue-50 border-primary/20 hover:shadow-lg transition-shadow cursor-pointer">
                     <CardContent className="p-6">

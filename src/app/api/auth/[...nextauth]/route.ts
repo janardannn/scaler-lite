@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { Session, User, Account, Profile } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@/generated/prisma"
@@ -21,7 +21,14 @@ export const authOptions = {
         }),
     ],
     callbacks: {
-        session: ({ session, user }) => {
+        async signIn({ user, account, profile }: {
+            user: User,
+            account: Account | null,
+            profile?: Profile
+        }) {
+            return true
+        },
+        session: ({ session, user }: { session: Session, user: User }) => {
             if (session.user) {
                 session.user.id = user.id
                 session.user.role = user.role
@@ -30,7 +37,18 @@ export const authOptions = {
         },
     },
     pages: {
-        signIn: '/auth/signin',
+        signIn: '/auth/sign-in',
+        newUser: '/profile/complete',
+    },
+    events: {
+        async signIn({ user, isNewUser }: {
+            user: User,
+            isNewUser?: boolean
+        }) {
+            if (isNewUser) {
+                console.log(`New user signed up: ${user.email}`)
+            }
+        }
     },
     secret: process.env.NEXTAUTH_SECRET,
 }

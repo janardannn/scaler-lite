@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 import { User, Settings, BookOpen, LogOut, GraduationCap } from "lucide-react";
 import {
     DropdownMenu,
@@ -15,13 +16,15 @@ import { SearchButton } from "@/components/search/search-button";
 
 interface NavbarProps {
     user: {
-        name?: string;
+        name: string;
         username: string,
-        image?: string;
+        email: string,
+        image: string | null;
     };
 }
 
 export function Navbar({ user }: NavbarProps) {
+    // user.image = null; // test avatar fallback 
     return (
         <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-7xl px-4">
             <div className="bg-white/80 backdrop-blur-md rounded-lg border border-slate-200 shadow-lg px-6 py-3">
@@ -44,14 +47,16 @@ export function Navbar({ user }: NavbarProps) {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <button className="flex items-center space-x-2 hover:bg-slate-100 rounded-md p-1 transition-colors">
-                                    <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center overflow-hidden">
+                                    <div className="w-8 h-8 rounded-md flex items-center justify-center overflow-hidden">
                                         {user.image ? (
                                             <Image
                                                 src={user.image}
-                                                alt={user.username}
+                                                alt={getDisplayName(user.name, user.username)[0].toUpperCase()}
                                                 width={32}
                                                 height={32}
                                                 className="rounded-full"
+                                                unoptimized
+                                                priority // img glitched otherwise, not loader [Intervention] Images loaded lazily and replaced with placeholders. Load events are deferred. See https://go.microsoft.com/fwlink/?linkid=2048113
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-primary rounded-md flex items-center justify-center">
@@ -80,12 +85,13 @@ export function Navbar({ user }: NavbarProps) {
                                     <GraduationCap className="mr-2 h-4 w-4" />
                                     <span>All Courses</span>
                                 </DropdownMenuItem>
+
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <Settings className="mr-2 h-4 w-4" />
-                                    <span>Settings</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="text-red-600">
+
+                                <DropdownMenuItem
+                                    className="text-red-600"
+                                    onClick={() => signOut({ callbackUrl: '/' })}
+                                >
                                     <LogOut className="mr-2 h-4 w-4" />
                                     <span>Log Out</span>
                                 </DropdownMenuItem>

@@ -1,6 +1,12 @@
+"use client";
+
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
 import { CourseCard } from "@/components/course-card";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Loader2 } from "lucide-react";
 
 // mock data
 const mockUser = {
@@ -8,7 +14,7 @@ const mockUser = {
   username: "janardan",
   email: "janardan@gmail.com",
   // image: "/avatars/janardan.jpg"
-  type: "instructor", // or "instructor"
+  type: "INSTRUCTOR", // or "instructor"
 };
 
 const mockMyCourses = [
@@ -72,13 +78,50 @@ const mockTopCourses = [
 ];
 
 export default function HomePage() {
+
+  const { data: session, status } = useSession()
+  const router = useRouter()
+
+
+  useEffect(() => {
+    if (status === "loading") return // wait for session
+    if (!session) {
+      router.push('/auth/sign-in')
+    }
+  }, [session, status, router])
+
+  const user = session?.user ? {
+    name: session.user.name || "User",
+    username: session.user.email?.split('@')[0] || "",
+    email: session.user.email || "",
+    image: session.user.image || null,
+    type: session.user.role?.toUpperCase() || "STUDENT"
+  } : {
+    name: "User",
+    username: "user",
+    email: "user@example.com",
+    image: null,
+    type: "STUDENT"
+  }
+
+  console.log(user);
+
+  if (status === "loading" || !session) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+
   return (
     <div className="min-h-screen bg-slate-50">
-      <Navbar user={mockUser} />
+      <Navbar user={user} />
 
       <main className="pt-28 pb-16 px-4 max-w-7xl mx-auto">
 
-        <Hero user={mockUser} />
+        <Hero user={user} />
 
         <section className="mb-12">
           <div className="flex items-center justify-between mb-6">
