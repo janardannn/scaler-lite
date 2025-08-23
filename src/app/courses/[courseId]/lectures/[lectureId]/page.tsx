@@ -200,7 +200,7 @@ export default function LecturePage() {
                                             <p className="font-semibold mb-2">{index + 1}. {q.text}</p>
                                             <RadioGroup onValueChange={(value) => setSelectedAnswers(prev => ({ ...prev, [q.id]: value }))}>
                                                 {q.options.map(opt => (
-                                                    <div key={opt.id} className="flex items-center space-x-2 p-2 rounded hover:bg-slate-50"><RadioGroupItem value={opt.id} id={`${q.id}-${opt.id}`} /><Label htmlFor={`${q.id}-${opt.id}`}>{opt.text}</Label></div>
+                                                    <div key={opt.id} className="flex items-center space-x-2 p-2 rounded hover:bg-slate-50"><RadioGroupItem className='border border-black/40 bg-slate-200' value={opt.id} id={`${q.id}-${opt.id}`} /><Label htmlFor={`${q.id}-${opt.id}`}>{opt.text}</Label></div>
                                                 ))}
                                             </RadioGroup>
                                         </div>
