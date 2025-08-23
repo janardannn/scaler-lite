@@ -77,7 +77,7 @@ export default function AllCoursesPage() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => router.back()}
+                            onClick={() => router.push("/")}
                             className="text-slate-600 hover:text-slate-900"
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" />

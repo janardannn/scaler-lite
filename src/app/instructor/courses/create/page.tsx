@@ -236,7 +236,7 @@ export default function CreateCoursePage() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => router.back()}
+                            onClick={() => router.push("/")}
                             className="text-slate-600 hover:text-slate-900"
                             disabled={isSubmitting}
                         >
@@ -377,7 +377,7 @@ export default function CreateCoursePage() {
                 <div className="flex justify-end space-x-4">
                     <Button
                         variant="outline"
-                        onClick={() => router.back()}
+                        onClick={() => router.push("/")}
                         disabled={isSubmitting}
                     >
                         cancel

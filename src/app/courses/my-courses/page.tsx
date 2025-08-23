@@ -73,7 +73,7 @@ export default function MyCoursesPage() {
             <main className="pt-28 pb-16 px-4 max-w-7xl mx-auto">
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center space-x-4">
-                        <Button variant="ghost" size="sm" onClick={() => router.back()} className="text-slate-600 hover:text-slate-900">
+                        <Button variant="ghost" size="sm" onClick={() => router.push("/")} className="text-slate-600 hover:text-slate-900">
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Back
                         </Button>

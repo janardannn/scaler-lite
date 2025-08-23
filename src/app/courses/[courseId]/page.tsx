@@ -102,7 +102,7 @@ export default function CourseDetailPage() {
                     <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
                     <h2 className="text-xl font-semibold text-red-700">An Error Occurred</h2>
                     <p className="text-slate-600 mt-2">{error}</p>
-                    <Button onClick={() => router.back()} className="mt-6">Go Back</Button>
+                    <Button onClick={() => router.push('/courses')} className="mt-6">Go Back</Button>
                 </main>
             </div>
         )
@@ -132,7 +132,7 @@ export default function CourseDetailPage() {
             <main className="pt-20 pb-16">
                 <div className="bg-slate-800 text-white py-12 px-4">
                     <div className="max-w-4xl mx-auto">
-                        <Button variant="ghost" size="sm" onClick={() => router.back()} className="mb-4 text-slate-300 hover:text-white hover:bg-slate-700">
+                        <Button variant="ghost" size="sm" onClick={() => router.push("/")} className="mb-4 text-slate-300 hover:text-white hover:bg-slate-700">
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Back to courses
                         </Button>
