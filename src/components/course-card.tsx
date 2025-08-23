@@ -70,9 +70,9 @@ export function CourseCard({
                     <div className="space-y-2">
                         <div className="flex justify-between text-sm">
                             <span className="text-slate-600">Progress</span>
-                            <span className="font-medium text-slate-900">
+                            {/* <span className="font-medium text-slate-900">
                                 {completedLectures}/{totalLectures} lectures
-                            </span>
+                            </span> */}
                         </div>
                         <Progress value={progress} className="h-2" />
                         <div className="text-xs text-[primary] font-medium">
