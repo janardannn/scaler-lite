@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 export const metadata: Metadata = {
-  title: 'Scaler Lite - Online Learning Platform',
+  title: 'scaler lite - Online Learning Platform',
   description: 'Personalized online learning platform for students and instructors. Continue your learning journey with interactive courses, quizzes, and progress tracking.',
   keywords: ['online learning', 'education', 'courses', 'e-learning', 'student progress', 'interactive quizzes'],
 }

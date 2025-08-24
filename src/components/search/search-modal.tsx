@@ -87,7 +87,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogTitle>Search</DialogTitle>
+            <DialogTitle />
             <DialogContent className="sm:max-w-2xl p-0 gap-0">
                 <DialogHeader className="p-4 pb-2">
                     <div className="flex space-x-2">
@@ -116,7 +116,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     {!hasSearched ? (
                         <div className="text-center py-12 text-slate-500">
                             <Search className="w-16 h-16 mx-auto mb-4 text-slate-300" />
-                            <h3 className="font-medium text-slate-700 mb-2">Search Scaler Lite</h3>
+                            <h3 className="font-medium text-slate-700 mb-2">Search scaler lite</h3>
                             <p className="text-sm">Find your next course or check out an instructor.</p>
                         </div>
                     ) : isSearching ? (

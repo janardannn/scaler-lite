@@ -64,7 +64,7 @@ export function Navbar() {
                             <GraduationCap className="w-5 h-5 text-white" />
                         </div>
                         <span className="font-bold text-slate-900 hidden sm:block">
-                            Scaler Lite
+                            scaler lite
                         </span>
                     </div>
 
