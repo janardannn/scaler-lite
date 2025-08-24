@@ -1,4 +1,4 @@
-# Scaler Lite
+# scaler lite
 
 A full-stack online learning platform built with Next.js. This was an assignment speedrun, built in around 50 hours.
 
