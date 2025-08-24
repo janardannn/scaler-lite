@@ -1,6 +1,7 @@
 
 import { NextResponse } from 'next/server';
 import { PrismaClient, UserType } from '@/generated/prisma';
+import { HttpStatus } from '@/utils/http-status';
 
 const prisma = new PrismaClient();
 
@@ -48,7 +49,10 @@ const courseData = [
 export async function GET() {
 
     if (process.env.NODE_ENV === 'production') {
-        return NextResponse.json({ message: 'Seeding is disabled in production' }, { status: 403 });
+        return NextResponse.json({ message: 'Seeding is disabled in production' }, { status: HttpStatus.FORBIDDEN });
+    }
+    else {
+        return NextResponse.json({ message: 'Seeding is disabled as database is filled with actual data.' }, { status: HttpStatus.FORBIDDEN });
     }
 
     try {
@@ -175,14 +179,14 @@ export async function GET() {
             for (const course of myCourses) {
                 await prisma.enrollment.create({
                     data: {
-                        userId: mainStudent.id,
+                        userId: mainStudent!.id,
                         courseId: course.id
                     }
                 });
                 if (course.lectures.length > 0) {
                     await prisma.progress.create({
                         data: {
-                            userId: mainStudent.id,
+                            userId: mainStudent!.id,
                             lectureId: course.lectures[0].id,
                             isCompleted: true
                         }

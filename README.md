@@ -47,16 +47,17 @@ A full-stack online learning platform built with Next.js. This was an assignment
   * `/courses/[courseId]/lectures/[lectureId]/submit` - POST quiz submission.
   * `/profile` - POST to update user profile.
   * `/uploadthing` - Handles file uploads.
+  * `/db-seed` - GET to populate database with initial data. (doesnt work in prod, remove else condition first for dev setup)
 
 ### Frontend Routes (`/src/app`)
 
-  * `/` - Home page
-  * `/auth/sign-in` - Sign-in page
-  * `/courses` - All courses page
-  * `/courses/[courseId]` - Course detail page
-  * `/courses/[courseId]/lectures/[lectureId]` - Lecture view page
-  * `/instructor/courses/create` - Course creation form
-  * `/profile/complete` - User profile completion page
+  * `/` - home page
+  * `/auth/sign-in` - sign-in page
+  * `/courses` - all courses page
+  * `/courses/[courseId]` - course detail page
+  * `/courses/[courseId]/lectures/[lectureId]` - lecture view page
+  * `/instructor/courses/create` - course creation form
+  * `/profile/complete` - user profile completion page
 
 -----
 
@@ -67,7 +68,7 @@ A full-stack online learning platform built with Next.js. This was an assignment
 ```bash
 git clone https://github.com/janardannn/scaler-lite.git
 cd scaler-lite
-npm install
+npm i
 ```
 
 #### 2\. Environment Variables
@@ -79,23 +80,21 @@ Create a `.env` file in the root directory and add the following:
 DATABASE_URL="your_mongodb_connection_string"
 
 # NextAuth.js
-NEXTAUTH_SECRET="a_random_secret_string"
-GOOGLE_CLIENT_ID="your_google_client_id"
+NEXTAUTH_SECRET="a_random_secret_string_32_chars"  # npx auth secret
+GOOGLE_CLIENT_ID="your_google_client_id"  # google cloud console > credentials > oauth
 GOOGLE_CLIENT_SECRET="your_google_client_secret"
 
 # UploadThing
-UPLOADTHING_SECRET="your_uploadthing_secret"
-UPLOADTHING_APP_ID="your_uploadthing_app_id"
+UPLOADTHING_TOKEN="your_uploadthing_token"
 ```
 
 #### 3\. Database Setup
 
-Push the schema and seed the database.
+Push the schema and generate the client.
 
 ```bash
 npx prisma generate
 npx prisma db push
-npx prisma db seed (optional, may require setup)
 ```
 
 #### 4\. Run Server
