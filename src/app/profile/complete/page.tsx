@@ -158,7 +158,8 @@ export default function CompleteProfilePage() {
                     ...session?.user,
                     name: user.name,
                     role: user.role,
-                    image: user.image || session?.user?.image
+                    image: user.image || session?.user?.image,
+                    profileComplete: true
                 }
             })
 
@@ -259,7 +260,7 @@ export default function CompleteProfilePage() {
                                 onValueChange={(value: "STUDENT" | "INSTRUCTOR") =>
                                     setFormData(prev => ({ ...prev, role: value }))
                                 }
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || session.user.profileComplete}
                             >
                                 <SelectTrigger>
                                     <SelectValue />

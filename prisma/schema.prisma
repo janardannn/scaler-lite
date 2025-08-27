@@ -25,17 +25,18 @@ enum LectureType {
 }
 
 model User {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  name        String?
-  email       String       @unique
-  image       String?
-  role        UserType     @default(STUDENT)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  courses     Course[]     @relation("InstructorCourses")
-  enrollments Enrollment[]
-  progress    Progress[]
-  scores      Score[]
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  name            String?
+  email           String       @unique
+  image           String?
+  role            UserType     @default(STUDENT)
+  profileComplete Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  courses         Course[]     @relation("InstructorCourses")
+  enrollments     Enrollment[]
+  progress        Progress[]
+  scores          Score[]
 
   // next-auth
   accounts Account[]

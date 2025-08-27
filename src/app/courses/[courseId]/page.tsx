@@ -86,6 +86,12 @@ export default function CourseDetailPage() {
         }
     };
 
+    const handleLectureClick = (lecture: Lecture) => {
+        if (lecture.isCompleted && course?.isEnrolled) {
+            router.push(`/courses/${courseId}/lectures/${lecture.id}`);
+        }
+    };
+
     if (isLoading || status === 'loading') {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -148,7 +154,7 @@ export default function CourseDetailPage() {
                             <h2 className="text-xl font-semibold mb-4">Course Content</h2>
                             <ul className="space-y-3">
                                 {course.lectures.map((lecture) => (
-                                    <li key={lecture.id} className="flex items-center justify-between p-3 border rounded-md bg-slate-50">
+                                    <li onClick={() => handleLectureClick(lecture)} key={lecture.id} className={`flex items-center justify-between p-3 border rounded-md bg-slate-50 ${lecture.isCompleted && course?.isEnrolled ? 'cursor-pointer' : ""}`}>
                                         <div className="flex items-center space-x-3">
                                             {lecture.type === 'READING' ? <FileText className="w-5 h-5 text-slate-500" /> : <HelpCircle className="w-5 h-5 text-slate-500" />}
                                             <span className="font-medium text-slate-800">{lecture.position}. {lecture.title}</span>

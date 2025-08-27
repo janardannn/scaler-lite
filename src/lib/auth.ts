@@ -32,6 +32,7 @@ export const authOptions = {
             if (session.user) {
                 session.user.id = user.id
                 session.user.role = user.role
+                session.user.profileComplete = user.profileComplete
             }
             return session
         },

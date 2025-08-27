@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
             where: { id: session.user.id },
             data: {
                 name: name.trim(),
-                role: role as "STUDENT" | "INSTRUCTOR"
+                role: role as "STUDENT" | "INSTRUCTOR",
+                profileComplete: true
             }
         })
 
@@ -72,14 +73,14 @@ export async function POST(request: NextRequest) {
             if (error.message.includes('Record to update not found')) {
                 return NextResponse.json(
                     { message: "User not found" },
-                    { status: 404 }
+                    { status: HttpStatus.NOT_FOUND }
                 )
             }
         }
 
         return NextResponse.json(
             { message: "Internal server error" },
-            { status: 500 }
+            { status: HttpStatus.INTERNAL_SERVER_ERROR }
         )
     }
 }
