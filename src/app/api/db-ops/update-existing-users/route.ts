@@ -3,7 +3,7 @@ import { HttpStatus } from '@/utils/http-status';
 import { NextResponse } from 'next/server';
 
 
-export async function GET({ }) {
+export async function GET() {
 
     if (process.env.NODE_ENV === 'production') {
         return NextResponse.json({ message: 'Seeding is disabled in production' }, { status: HttpStatus.FORBIDDEN });
